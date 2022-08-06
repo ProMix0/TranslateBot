@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 using TranslateBot;
 using TranslateBot.Common;
+using Utils;
 
 Console.WriteLine("Hello, World!");
 
@@ -13,11 +15,16 @@ IHost host = Host.CreateDefaultBuilder()
     {
         builder.AddUserSecrets(Assembly.GetAssembly(typeof(Program)));
     })
-    .ConfigureServices(services =>
+    .ConfigureServices((context, services) =>
     {
         services
 
-        .AddTransient<ITranslator, LibreTranslator>()
+        .AddOptions<MirrorsLibreTranslator.MirrorsList>(builder =>
+            builder.BindConfiguration(MirrorsLibreTranslator.MirrorsList.SectionName))
+
+        .AddTransient<ITranslator, MirrorsLibreTranslator>()
+
+        .AddSingleton<ITokenService, TokenService>()
 
         .AddHostedService<BotService>();
     })

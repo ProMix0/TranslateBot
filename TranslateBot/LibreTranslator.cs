@@ -15,8 +15,6 @@ namespace TranslateBot
         public LibreTranslator()
         {
             translate = new("https://libretranslate.de/");
-
-
         }
 
         public static LanguageCode? FromEmoji(string emoji) => emoji switch
