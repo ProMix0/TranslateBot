@@ -4,18 +4,16 @@ namespace TranslateBot
 {
     public interface ITokenService
     {
-        string GetToken();
+        string Token { get; }
     }
 
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration configuration;
+        public string Token { get; }
 
         public TokenService(IConfiguration configuration)
         {
-            this.configuration = configuration;
+            Token = configuration["Token"];
         }
-
-        public string GetToken() => configuration["Token"];
     }
 }

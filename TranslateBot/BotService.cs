@@ -31,7 +31,7 @@ namespace TranslateBot
             DiscordClient client = new(new()
             {
                 LoggerFactory = loggerFactory,
-                Token = tokenService.GetToken(),
+                Token = tokenService.Token,
                 TokenType = TokenType.Bot
             });
 
