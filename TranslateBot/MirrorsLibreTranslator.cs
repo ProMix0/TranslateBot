@@ -17,7 +17,7 @@ namespace TranslateBot
 
         public MirrorsLibreTranslator(IOptions<MirrorsList> mirrors)
         {
-            translates = mirrors.Value.Mirrors.Select(url => new LibreTranslate.Net.LibreTranslate(url)).ToArray();
+            translates = mirrors.Value.Mirrors.Select(url => new LibreTranslate.Net.LibreTranslate(url)).Where(IsActive).ToArray();
         }
 
         public Task<string> Translate(string text, string emoji)
@@ -57,6 +57,26 @@ namespace TranslateBot
             ":flag_es:" => LanguageCode.Spanish,
             _ => null
         };
+
+        private static bool IsActive(LibreTranslate.Net.LibreTranslate arg)
+        {
+            bool result = true;
+            try
+            {
+                if (arg.TranslateAsync(new()
+                {
+                    Source = LanguageCode.AutoDetect,
+                    Target = LanguageCode.Russian,
+                    Text = "Test string"
+                }).Result == null)
+                    result = false;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
 
         public class MirrorsList
         {
