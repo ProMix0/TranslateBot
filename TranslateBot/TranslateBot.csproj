@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <UserSecretsId>217b8fac-5ae8-4d69-a458-a9414de1b46b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BetterHostedServices" Version="2.0.3" />
+    <PackageReference Include="DSharpPlus" Version="4.2.0" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0" />
+    <PackageReference Include="LibreTranslate.Net" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>
