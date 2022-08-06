@@ -40,10 +40,10 @@ namespace TranslateBot
             await client.ConnectAsync();
         }
 
-        private async Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
+        private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
         {
-            if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
-                return;
+            _ = Task.Run(async () =>
+            {
                 if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
                     return;
 
@@ -58,6 +58,8 @@ namespace TranslateBot
                 translate ??= "Unable to translate";
 
                 await message.RespondAsync(translate);
+            });
+            return Task.CompletedTask;
         }
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
