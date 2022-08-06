@@ -1,5 +1,6 @@
 ﻿using LibreTranslate.Net;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,25 @@ namespace TranslateBot
 {
     internal class MirrorsLibreTranslator : ITranslator
     {
-        private readonly LibreTranslate.Net.LibreTranslate[] translates;
+        private readonly List<LibreTranslate.Net.LibreTranslate> translates = new();
+        private readonly ILogger<MirrorsLibreTranslator> logger;
         int index = 0;
 
-        public MirrorsLibreTranslator(IOptions<MirrorsList> mirrors)
+        public MirrorsLibreTranslator(IOptions<MirrorsList> mirrors, ILogger<MirrorsLibreTranslator> logger)
         {
-            translates = mirrors.Value.Mirrors.Select(url => new LibreTranslate.Net.LibreTranslate(url)).Where(IsActive).ToArray();
+            this.logger = logger;
+            logger.LogDebug("Begin activity check for {Count} mirrors", mirrors.Value.Mirrors.Length);
+            foreach (var url in mirrors.Value.Mirrors)
+            {
+                logger.LogTrace("Checking \"{Url}\" for activity", url);
+
+                LibreTranslate.Net.LibreTranslate translate = new(url);
+                if (IsActive(translate, url)) translates.Add(translate);
+            }
+            if (translates.Count == 0)
+                logger.LogError("Activity check didn't found active mirrors");
+            else
+                logger.LogDebug("End activity check with {Count} active mirrors", translates.Count);
         }
 
         public Task<string> Translate(string text, string emoji)
@@ -25,9 +39,14 @@ namespace TranslateBot
             LanguageCode? to = FromEmoji(emoji);
 
             if (to == null)
+            {
+                logger.LogDebug("Emoji \"{Emoji}\" not found. Returning null", emoji);
                 return Task.FromResult<string>(null);
+            }
 
-            if (++index >= translates.Length) index = 0;
+            if (++index >= translates.Count) index = 0;
+
+            logger.LogTrace("Translate using translate[{Index}]", index);
 
             return translates[index].TranslateAsync(new()
             {
@@ -58,21 +77,25 @@ namespace TranslateBot
             _ => null
         };
 
-        private static bool IsActive(LibreTranslate.Net.LibreTranslate arg)
+        private bool IsActive(LibreTranslate.Net.LibreTranslate translate, string url)
         {
             bool result = true;
             try
             {
-                if (arg.TranslateAsync(new()
+                if (translate.TranslateAsync(new()
                 {
                     Source = LanguageCode.AutoDetect,
                     Target = LanguageCode.Russian,
                     Text = "Test string"
                 }).Result == null)
+                {
+                    logger.LogWarning("Translator from url \"{Url}\" return null", url);
                     result = false;
+                }
             }
             catch
             {
+                logger.LogWarning("Translator from url \"{Url}\" throws exception", url);
                 result = false;
             }
             return result;

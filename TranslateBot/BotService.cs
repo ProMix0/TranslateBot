@@ -44,17 +44,20 @@ namespace TranslateBot
         {
             if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
                 return;
+                if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
+                    return;
 
-            var message = e.Message;
-            if (message.Content == null)
-                message = await e.Channel.GetMessageAsync(message.Id);
+                logger.LogTrace("Reaction received. Message id: {Id}, emoji: {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
 
-            string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
+                var message = e.Message;
+                if (message.Content == null)
+                    message = await e.Channel.GetMessageAsync(message.Id);
 
-            translate ??= "Unable to translate";
+                string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
 
-            await message.RespondAsync(translate);
+                translate ??= "Unable to translate";
 
+                await message.RespondAsync(translate);
         }
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
