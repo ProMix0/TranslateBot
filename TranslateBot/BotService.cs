@@ -7,17 +7,18 @@ using LibreTranslate.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TranslateBot.Common;
+using Utils;
 
 namespace TranslateBot
 {
-    internal class BotService : CriticalBackgroundService
+    internal class BotService : NotEndingBackgroundService
     {
         private readonly ITranslator translator;
         private readonly ITokenService tokenService;
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger<BotService> logger;
 
-        public BotService(ITranslator translator, ITokenService tokenService, ILoggerFactory loggerFactory, ILogger<BotService> logger) : base(new FalseApplicationEnder())
+        public BotService(ITranslator translator, ITokenService tokenService, ILoggerFactory loggerFactory, ILogger<BotService> logger)
         {
             this.translator = translator;
             this.tokenService = tokenService;
@@ -58,16 +59,7 @@ namespace TranslateBot
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
         {
-            //TODO use helper
-            logger.LogCritical(exceptionFromExecuteAsync.Message);
-        }
-
-        private class FalseApplicationEnder : IApplicationEnder
-        {
-            public void ShutDownApplication()
-            {
-
-            }
+            exceptionFromExecuteAsync.LogExceptionMessage(logger);
         }
     }
 }
