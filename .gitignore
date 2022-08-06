@@ -397,4 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-[Tt][Ee][Ss][Tt]/
+[Tt][Ee][Ss][Tt]/*
