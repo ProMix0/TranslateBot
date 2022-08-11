@@ -41,9 +41,9 @@ jobs:
             touch ~/.netrc
             echo "machine api.heroku.com" >> ~/.netrc
             echo "  login misha.zaverkin@gmail.com" >> ~/.netrc
-            echo "  token $HEROKU_TOKEN" >> ~/.netrc
+            echo "  password $HEROKU_TOKEN" >> ~/.netrc
             echo "machine git.heroku.com" >> ~/.netrc
             echo "  login misha.zaverkin@gmail.com" >> ~/.netrc
-            echo "  token $HEROKU_TOKEN" >> ~/.netrc
+            echo "  password $HEROKU_TOKEN" >> ~/.netrc
         - name: Deploy container
           run: heroku container:release worker -a ${{ secrets.APP_NAME }}
