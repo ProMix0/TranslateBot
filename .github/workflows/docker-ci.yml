@@ -27,6 +27,8 @@ jobs:
           run: docker push ${{ secrets.DOCKER_USER }}/translate-bot:latest
         - name: Login Heroku
           run: docker login --username=_ --password=${{ secrets.HEROKU_TOKEN }} registry.heroku.com
+        - name: Build Heroku
+          run: docker build -t registry.heroku.com/promix-test/web --progress plain .
         - name: Push Heroku
           run: docker push registry.heroku.com/promix-test/web
 
