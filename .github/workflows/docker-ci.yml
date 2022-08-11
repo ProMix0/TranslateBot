@@ -28,9 +28,19 @@ jobs:
         - name: Login Heroku
           run: docker login --username=_ --password=${{ secrets.HEROKU_TOKEN }} registry.heroku.com
         - name: Build Heroku
-          run: docker build -t registry.heroku.com/${{ secrets.APP_NAME }}/web --progress plain .
+          run: docker build -t registry.heroku.com/${{ secrets.APP_NAME }}/worker --progress plain .
         - name: Push Heroku
-          run: docker push registry.heroku.com/${{ secrets.APP_NAME }}/web
+          run: docker push registry.heroku.com/${{ secrets.APP_NAME }}/worker
         - name: Install Heroku
           run: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-
+        - name: Login Heroku
+          shell: bash
+          env:
+            HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
+          run: |
+            touch ~/.netrc
+            echo "machine api.heroku.com" >> ~/.netrc
+            echo "  login misha.zaverkin@gmail.com" >> ~/.netrc
+            echo "  token $HEROKU_TOKEN" >> ~/.netrc
+        - name: Deploy container
+          run: heroku container:release worker -a ${{ secrets.APP_NAME }}
