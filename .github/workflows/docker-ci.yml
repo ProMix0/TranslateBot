@@ -20,9 +20,7 @@ jobs:
         - name: Login Docker
           run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
         - name: Build container
-          run: docker build -t translate-bot --progress plain .
-        - name: Tag container
-          run: docker tag translate-bot ${{ secrets.DOCKER_USER }}/translate-bot:latest
+          run: docker build -t translate-bot:latest --progress plain .
         - name: Push Docker
           run: docker push ${{ secrets.DOCKER_USER }}/translate-bot:latest
         - name: Login Heroku
