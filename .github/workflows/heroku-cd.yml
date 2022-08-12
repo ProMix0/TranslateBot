@@ -1,15 +1,16 @@
-name: Docker CI
+name: Heroku CD
 
 on:
-  push:
+  pull_request:
     branches:
-    - main
-  workflow_dispatch:
+        - main
+    types:
+        - closed
     
 jobs:
-  ci:
+  cd:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    
     steps:
         - name: Clone repository
           uses: actions/checkout@v3
@@ -23,8 +24,6 @@ jobs:
           run: docker build -t translate-bot --progress plain .
         - name: Tag container
           run: docker tag translate-bot ${{ secrets.DOCKER_USER }}/translate-bot:latest
-        - name: Push Docker
-          run: docker push ${{ secrets.DOCKER_USER }}/translate-bot:latest
         - name: Login Heroku
           run: docker login --username=_ --password=${{ secrets.HEROKU_TOKEN }} registry.heroku.com
         - name: Build Heroku
