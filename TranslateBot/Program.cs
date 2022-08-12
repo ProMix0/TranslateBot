@@ -13,7 +13,9 @@ Console.WriteLine("Hello, World!");
 IHost host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration(builder =>
     {
-        builder.AddUserSecrets(Assembly.GetAssembly(typeof(Program)));
+        builder
+        .AddUserSecrets(Assembly.GetAssembly(typeof(Program)))
+        .AddEnvironmentVariables();
     })
     .ConfigureServices((context, services) =>
     {
