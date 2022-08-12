@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace TranslateBot
 {
@@ -9,11 +10,35 @@ namespace TranslateBot
 
     public class TokenService : ITokenService
     {
-        public string Token { get; }
+        private readonly IConfiguration configuration;
+        private readonly ILogger<TokenService> logger;
 
-        public TokenService(IConfiguration configuration)
+        private readonly string[] keys = { "Token", "DISCORD_TOKEN" };
+
+        public string Token { get; private set; }
+
+        public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
         {
-            Token = configuration["Token"];
+            this.configuration = configuration;
+            this.logger = logger;
+
+            foreach (var key in keys)
+                if (TrySetToken(key))
+                    break;
+
+            if (Token == null)
+                logger.LogCritical("Can't get token from keys");
+        }
+
+        private bool TrySetToken(string key)
+        {
+            Token = configuration[key];
+            if (Token != null)
+            {
+                logger.LogDebug("Get token from {Key}", key);
+                return true;
+            }
+            return false;
         }
     }
 }
