@@ -15,7 +15,7 @@ namespace TranslateBot
 
         private readonly string[] keys = { "Token", "DISCORD_TOKEN" };
 
-        public string Token { get; private set; }
+        public string? Token { get; private set; }
 
         public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
         {

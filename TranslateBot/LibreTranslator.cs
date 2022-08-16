@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TranslateBot.Common;
 using LibreTranslate.Net;
+using TranslateBot.Common;
 
 namespace TranslateBot
 {
@@ -42,7 +42,7 @@ namespace TranslateBot
             LanguageCode? to = FromEmoji(emoji);
 
             if (to == null)
-                return Task.FromResult<string>(null);
+                return Task.FromResult<string>(string.Empty);
 
             return translate.TranslateAsync(new()
             {

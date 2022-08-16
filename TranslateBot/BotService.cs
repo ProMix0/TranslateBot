@@ -55,7 +55,7 @@ namespace TranslateBot
 
                 string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
 
-                translate ??= "Unable to translate";
+                if (string.IsNullOrEmpty(translate)) translate = "Unable to translate";
 
                 await message.RespondAsync(translate);
             });

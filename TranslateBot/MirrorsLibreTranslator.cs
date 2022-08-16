@@ -1,12 +1,12 @@
-﻿using LibreTranslate.Net;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibreTranslate.Net;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TranslateBot.Common;
 
 namespace TranslateBot
@@ -41,7 +41,7 @@ namespace TranslateBot
             if (to == null)
             {
                 logger.LogDebug("Emoji \"{Emoji}\" not found. Returning null", emoji);
-                return Task.FromResult<string>(null);
+                return Task.FromResult<string>(string.Empty);
             }
 
             if (++index >= translates.Count) index = 0;
