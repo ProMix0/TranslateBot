@@ -1,6 +1,7 @@
 ﻿using BetterHostedServices;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Emzi0767.Utilities;
 using LibreTranslate.Net;
@@ -57,7 +58,11 @@ namespace TranslateBot
 
                 if (string.IsNullOrEmpty(translate)) translate = "Unable to translate";
 
-                await message.RespondAsync(translate);
+                await new DiscordMessageBuilder()
+                .WithContent($"{e.User.Mention}:\n{translate}")
+                .WithAllowedMention(new UserMention(e.User))
+                .WithReply(e.Message.Id)
+                .SendAsync(e.Channel);
             });
             return Task.CompletedTask;
         }
