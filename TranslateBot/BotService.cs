@@ -43,12 +43,16 @@ namespace TranslateBot
 
         private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
         {
+            logger.LogDebug("Reaction received. Message id: {Id}, emoji: {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+
+            if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
+                return Task.CompletedTask;
+
+            logger.LogDebug("Reaction accepted. Begin translate");
+
             _ = Task.Run(async () =>
             {
-                if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
-                    return;
-
-                logger.LogTrace("Reaction received. Message id: {Id}, emoji: {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+                await e.Channel.TriggerTypingAsync();
 
                 var message = e.Message;
                 if (message.Content == null)
@@ -56,7 +60,11 @@ namespace TranslateBot
 
                 string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
 
-                if (string.IsNullOrEmpty(translate)) translate = "Unable to translate";
+                if (string.IsNullOrEmpty(translate))
+                {
+                    translate = "Unable to translate";
+                    logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+                }
 
                 await new DiscordMessageBuilder()
                 .WithContent($"{e.User.Mention}:\n{translate}")

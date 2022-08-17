@@ -5,7 +5,7 @@ namespace TranslateBot
 {
     public interface ITokenService
     {
-        string Token { get; }
+        string? Token { get; }
     }
 
     public class TokenService : ITokenService
