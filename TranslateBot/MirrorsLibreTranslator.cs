@@ -48,6 +48,8 @@ namespace TranslateBot
 
             logger.LogTrace("Translate using translate[{Index}]", index);
 
+            logger.LogDebug("Source message: {Message}, target language: {Target}",text,to.ToString());
+
             return translates[index].TranslateAsync(new()
             {
                 ApiKey = null,
