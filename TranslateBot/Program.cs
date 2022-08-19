@@ -1,9 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 using TranslateBot;
 using TranslateBot.Common;
 using Utils;
@@ -25,6 +25,7 @@ IHost host = Host.CreateDefaultBuilder()
             builder.BindConfiguration(MirrorsLibreTranslator.MirrorsList.SectionName))
 
         .AddTransient<ITranslator, MirrorsLibreTranslator>()
+        .AddTransient<IMessageValidator, MessageValidator>()
 
         .AddSingleton<ITokenService, TokenService>()
 

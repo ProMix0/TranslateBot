@@ -18,11 +18,13 @@ namespace TranslateBot
         private readonly ITokenService tokenService;
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger<BotService> logger;
+        private readonly IMessageValidator validator;
 
-        public BotService(ITranslator translator, ITokenService tokenService, ILoggerFactory loggerFactory, ILogger<BotService> logger)
+        public BotService(ITranslator translator, ITokenService tokenService, IMessageValidator validator, ILoggerFactory loggerFactory, ILogger<BotService> logger)
         {
             this.translator = translator;
             this.tokenService = tokenService;
+            this.validator = validator;
             this.loggerFactory = loggerFactory;
             this.logger = logger;
         }
@@ -52,29 +54,35 @@ namespace TranslateBot
 
             _ = Task.Run(async () =>
             {
-                var message = e.Message;
-                if (message.Content == null)
-                    message = await e.Channel.GetMessageAsync(message.Id);
-
-                if (string.IsNullOrWhiteSpace(message.Content)) return;
-
-                await e.Channel.TriggerTypingAsync();
-
-                string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
-
-                logger.LogDebug("Translated message: {Message}", translate);
-                
-                if (string.IsNullOrEmpty(translate))
+                try
                 {
-                    translate = "Unable to translate";
-                    logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
-                }
+                    DiscordMessage message = await e.Message.EnsureCached();
 
-                await new DiscordMessageBuilder()
-                .WithContent($"{e.User.Mention}:\n{translate}")
-                .WithAllowedMention(new UserMention(e.User))
-                .WithReply(e.Message.Id)
-                .SendAsync(e.Channel);
+                    if (await validator.Validate(e, message))
+                    {
+                        await e.Channel.TriggerTypingAsync();
+
+                        string translate = await translator.Translate(message.Content!, e.Emoji.GetDiscordName());
+
+                        logger.LogDebug("Translated message: {Message}", translate);
+
+                        if (string.IsNullOrEmpty(translate))
+                        {
+                            translate = "Unable to translate";
+                            logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+                        }
+
+                        await new DiscordMessageBuilder()
+                        .WithContent($"{e.User.Mention}\n{translate}")
+                        .WithAllowedMention(new UserMention(e.User))
+                        .WithReply(e.Message.Id)
+                        .SendAsync(e.Channel);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ex.LogExceptionMessage(logger);
+                }
             });
             return Task.CompletedTask;
         }
