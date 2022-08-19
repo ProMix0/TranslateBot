@@ -1,10 +1,11 @@
 name: Deploy Heroku
 
 on:
-  workflow_run:
-    workflows: [Lint ReSharper]
-    types: [completed]
-    branches: [main]
+  pull_request:
+    branches:
+        - main
+    types:
+        - closed
     
 jobs:
   deploy:
