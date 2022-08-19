@@ -47,27 +47,34 @@ namespace TranslateBot
         {
             _ = Task.Run(async () =>
             {
-
-                ValidationResult result = await validator.Validate(e);
-                if (result.success)
+                try
                 {
-                    await e.Channel.TriggerTypingAsync();
+                    DiscordMessage message = await e.Message.EnsureCached();
 
-                    string translate = await translator.Translate(result.result!, e.Emoji.GetDiscordName());
-
-                    logger.LogDebug("Translated message: {Message}", translate);
-
-                    if (string.IsNullOrEmpty(translate))
+                    if (await validator.Validate(e, message))
                     {
-                        translate = "Unable to translate";
-                        logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
-                    }
+                        await e.Channel.TriggerTypingAsync();
 
-                    await new DiscordMessageBuilder()
-                    .WithContent($"{e.User.Mention}\n{translate}")
-                    .WithAllowedMention(new UserMention(e.User))
-                    .WithReply(e.Message.Id)
-                    .SendAsync(e.Channel);
+                        string translate = await translator.Translate(message.Content!, e.Emoji.GetDiscordName());
+
+                        logger.LogDebug("Translated message: {Message}", translate);
+
+                        if (string.IsNullOrEmpty(translate))
+                        {
+                            translate = "Unable to translate";
+                            logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+                        }
+
+                        await new DiscordMessageBuilder()
+                        .WithContent($"{e.User.Mention}\n{translate}")
+                        .WithAllowedMention(new UserMention(e.User))
+                        .WithReply(e.Message.Id)
+                        .SendAsync(e.Channel);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ex.LogExceptionMessage(logger);
                 }
             });
             return Task.CompletedTask;
