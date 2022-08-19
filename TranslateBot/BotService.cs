@@ -52,7 +52,6 @@ namespace TranslateBot
 
             _ = Task.Run(async () =>
             {
-
                 var message = e.Message;
                 if (message.Content == null)
                     message = await e.Channel.GetMessageAsync(message.Id);
@@ -64,7 +63,7 @@ namespace TranslateBot
                 string translate = await translator.Translate(message.Content, e.Emoji.GetDiscordName());
 
                 logger.LogDebug("Translated message: {Message}", translate);
-
+                
                 if (string.IsNullOrEmpty(translate))
                 {
                     translate = "Unable to translate";
