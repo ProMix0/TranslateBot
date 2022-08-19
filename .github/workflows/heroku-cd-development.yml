@@ -1,10 +1,10 @@
-name: Heroku develop CD
+name: Deploy Heroku develop
 
 on:
   workflow_dispatch:
     
 jobs:
-  cd:
+  deploy:
     runs-on: ubuntu-latest
     steps:
         - name: Clone repository

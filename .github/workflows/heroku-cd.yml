@@ -1,4 +1,4 @@
-name: Heroku CD
+name: Deploy Heroku
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
         - closed
     
 jobs:
-  cd:
+  deploy:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
