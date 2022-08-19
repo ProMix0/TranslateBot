@@ -45,6 +45,13 @@ namespace TranslateBot
 
         private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
         {
+            logger.LogDebug("Reaction received. Message id: {Id}, emoji: {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
+
+            if (!e.Emoji.GetDiscordName().StartsWith(":flag_"))
+                return Task.CompletedTask;
+
+            logger.LogDebug("Reaction accepted. Begin translate");
+
             _ = Task.Run(async () =>
             {
                 try
