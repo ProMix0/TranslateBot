@@ -13,6 +13,6 @@ jobs:
      - name: Checkout
        uses: actions/checkout@v3
      - name: Inspect
-       uses: florius0/resharper-ci
+       uses: florius0/resharper-ci@v0.2.1
        with:
           solution: './TranslateBot.sln'
