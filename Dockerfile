@@ -9,7 +9,7 @@ RUN dotnet restore
 RUN dotnet publish ./Bot.Runner/ -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/runtime:6.0
+FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine
 WORKDIR /Bot
 COPY --from=build-env /Bot.Runner/out .
 ENTRYPOINT ["dotnet", "Bot.Runner.dll"]
