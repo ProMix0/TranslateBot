@@ -1,4 +1,5 @@
 using BetterHostedServices;
+using Bot.Abstractions;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Utils;
 
-namespace TranslateBot
+namespace Bot.Modules.Translation
 {
     public class TranslationModule : IBotModule
     {

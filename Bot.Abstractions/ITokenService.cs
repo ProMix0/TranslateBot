@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace TranslateBot
+namespace Bot.Abstractions
 {
     public interface ITokenService
     {

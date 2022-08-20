@@ -1,15 +1,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
-WORKDIR /TranslateBot
+WORKDIR /Bot.Runner
 
 # Copy everything
 COPY . ./
 # Restore as distinct layers
-RUN dotnet restore ./TranslateBot/
+RUN dotnet restore
 # Build and publish a release
-RUN dotnet publish ./TranslateBot/ -c Release -o out
+RUN dotnet publish ./Bot.Runner/ -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:6.0
-WORKDIR /TranslateBot
+WORKDIR /Bot
 COPY --from=build-env /TranslateBot/out .
-ENTRYPOINT ["dotnet", "TranslateBot.dll"]
+ENTRYPOINT ["dotnet", "Bot.Runner.dll"]
