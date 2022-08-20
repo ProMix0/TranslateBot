@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using TranslateBot;
-using TranslateBot.Common;
 using Utils;
 
 Console.WriteLine("Hello, World!");
@@ -26,6 +25,8 @@ IHost host = Host.CreateDefaultBuilder()
 
         .AddTransient<ITranslator, MirrorsLibreTranslator>()
         .AddTransient<IMessageValidator, MessageValidator>()
+
+        .AddTransient<IBotModule, TranslationModule>()
 
         .AddSingleton<ITokenService, TokenService>()
 

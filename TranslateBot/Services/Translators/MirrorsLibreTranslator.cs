@@ -7,7 +7,6 @@ using LibreTranslate.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TranslateBot.Common;
 
 namespace TranslateBot
 {
@@ -48,7 +47,7 @@ namespace TranslateBot
 
             logger.LogTrace("Translate using translate[{Index}]", index);
 
-            logger.LogDebug("Source message: {Message}, target language: {Target}",text,to.ToString());
+            logger.LogDebug("Source message: {Message}, target language: {Target}", text, to.ToString());
 
             return translates[index].TranslateAsync(new()
             {

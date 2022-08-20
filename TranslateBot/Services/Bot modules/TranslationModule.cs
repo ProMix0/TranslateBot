@@ -1,4 +1,4 @@
-﻿using BetterHostedServices;
+using BetterHostedServices;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -7,40 +7,36 @@ using Emzi0767.Utilities;
 using LibreTranslate.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using TranslateBot.Common;
 using Utils;
 
 namespace TranslateBot
 {
-    internal class BotService : NotEndingBackgroundService
+    public class TranslationModule : IBotModule
     {
+
         private readonly ITranslator translator;
         private readonly ITokenService tokenService;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<BotService> logger;
         private readonly IMessageValidator validator;
+        private readonly ILogger<TranslationModule> logger;
 
-        public BotService(ITranslator translator, ITokenService tokenService, IMessageValidator validator, ILoggerFactory loggerFactory, ILogger<BotService> logger)
+        public TranslationModule(ITranslator translator, ITokenService tokenService, IMessageValidator validator, ILogger<TranslationModule> logger)
         {
             this.translator = translator;
             this.tokenService = tokenService;
             this.validator = validator;
-            this.loggerFactory = loggerFactory;
             this.logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public void Register(DiscordClient client)
         {
-            DiscordClient client = new(new()
-            {
-                LoggerFactory = loggerFactory,
-                Token = tokenService.Token,
-                TokenType = TokenType.Bot
-            });
-
+            logger.LogDebug("Registering to {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded += OnMessageReactionAdded;
+        }
 
-            await client.ConnectAsync();
+        public void Unregister(DiscordClient client)
+        {
+            logger.LogDebug("Unregistering from {Event}", nameof(client.MessageReactionAdded));
+            client.MessageReactionAdded -= OnMessageReactionAdded;
         }
 
         private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
@@ -85,11 +81,6 @@ namespace TranslateBot
                 }
             });
             return Task.CompletedTask;
-        }
-
-        protected override void OnError(Exception exceptionFromExecuteAsync)
-        {
-            exceptionFromExecuteAsync.LogExceptionMessage(logger);
         }
     }
 }
