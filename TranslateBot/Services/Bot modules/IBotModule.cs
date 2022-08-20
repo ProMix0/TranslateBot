@@ -9,8 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Utils;
 
-namespace TranslateBot{
-    public interface IBotModule{
+namespace TranslateBot
+{
+    public interface IBotModule
+    {
         void Register(DiscordClient client);
         void Unregister(DiscordClient client);
     }
