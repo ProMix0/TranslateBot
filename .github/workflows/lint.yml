@@ -16,6 +16,6 @@ jobs:
        with:
             submodules: true
      - name: Inspect
-       uses: nbadal/inspectcode-action@v1
-       with:
-          solution: './TranslateBot.sln'
+       uses: glassechidna/resharper-action@master
+        with:
+          solution: TranslateBot.sln
