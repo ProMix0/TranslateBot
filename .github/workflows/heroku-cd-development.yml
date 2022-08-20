@@ -22,9 +22,9 @@ jobs:
           run: docker build -t registry.heroku.com/${{ secrets.APP_NAME }}-develop/worker --progress plain .
         - name: Push Heroku
           run: docker push registry.heroku.com/${{ secrets.APP_NAME }}-develop/worker
-        - name: Install Heroku
+        - name: Install Heroku CLI
           run: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-        - name: Login Heroku
+        - name: Login Heroku CLI
           shell: bash
           env:
             HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
