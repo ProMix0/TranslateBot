@@ -5,7 +5,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace TranslateBot
+namespace Bot.Modules.Translation
 {
     public interface IMessageValidator
     {

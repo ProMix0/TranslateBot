@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LibreTranslate.Net;
 
-namespace TranslateBot
+namespace Bot.Modules.Translation
 {
     public interface ITranslator
     {

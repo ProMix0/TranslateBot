@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Utils;
 
-namespace TranslateBot
+namespace Bot.Abstractions
 {
     public interface IBotModule
     {
