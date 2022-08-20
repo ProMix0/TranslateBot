@@ -11,5 +11,5 @@ RUN dotnet publish ./Bot.Runner/ -c Release -o out
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:6.0
 WORKDIR /Bot
-COPY --from=build-env /TranslateBot/out .
+COPY --from=build-env /Bot.Runner/out .
 ENTRYPOINT ["dotnet", "Bot.Runner.dll"]
