@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Self Test
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-            submodules: true
-      - name: Inspect
-        uses: glassechidna/resharper-action@master
-        with:
-          solution: TranslateBot.sln
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#        with:
+#            submodules: true
+#      - name: Inspect
+#        uses: glassechidna/resharper-action@master
+#        with:
+#          solution: TranslateBot.sln
