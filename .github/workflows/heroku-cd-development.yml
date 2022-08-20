@@ -16,21 +16,15 @@ jobs:
             submodules: true
         - name: Setup dotnet
           uses: actions/setup-dotnet@v2
-        - name: Login Docker
-          run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-        - name: Build container
-          run: docker build -t translate-bot --progress plain .
-        - name: Tag container
-          run: docker tag translate-bot ${{ secrets.DOCKER_USER }}/translate-bot:latest
         - name: Login Heroku
           run: docker login --username=_ --password=${{ secrets.HEROKU_TOKEN }} registry.heroku.com
         - name: Build Heroku
           run: docker build -t registry.heroku.com/${{ secrets.APP_NAME }}-develop/worker --progress plain .
         - name: Push Heroku
           run: docker push registry.heroku.com/${{ secrets.APP_NAME }}-develop/worker
-        - name: Install Heroku
+        - name: Install Heroku CLI
           run: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-        - name: Login Heroku
+        - name: Login Heroku CLI
           shell: bash
           env:
             HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
