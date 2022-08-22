@@ -33,9 +33,9 @@ namespace Bot.Modules.Translation
                 logger.LogDebug("End activity check with {Count} active mirrors", translates.Count);
         }
 
-        public Task<string> Translate(string text, string emoji)
+        public Task<string> Translate(string text, LanguageCode to)
         {
-            LanguageCode? to = FromEmoji(emoji);
+            /*LanguageCode? to = FromEmoji(emoji);
 
             if (to == null)
             {
@@ -47,7 +47,7 @@ namespace Bot.Modules.Translation
 
             logger.LogTrace("Translate using translate[{Index}]", index);
 
-            logger.LogDebug("Source message: {Message}, target language: {Target}", text, to.ToString());
+            logger.LogDebug("Source message: {Message}, target language: {Target}", text, to.ToString());*/
 
             return translates[index].TranslateAsync(new()
             {

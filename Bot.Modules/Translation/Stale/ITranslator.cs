@@ -9,6 +9,6 @@ namespace Bot.Modules.Translation
 {
     public interface ITranslator
     {
-        public Task<string> Translate(string text, string emoji);
+        public Task<string> Translate(string text, LanguageCode target);
     }
 }

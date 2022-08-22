@@ -1,8 +1,8 @@
 using BetterHostedServices;
+using BicycleEcs;
 using Bot.Abstractions;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Emzi0767.Utilities;
 using LibreTranslate.Net;
@@ -14,66 +14,54 @@ namespace Bot.Modules.Translation
 {
     public class TranslationModule : IBotModule
     {
-
-        private readonly ITranslator translator;
-        private readonly ITokenService tokenService;
-        private readonly IMessageValidator validator;
         private readonly ILogger<TranslationModule> logger;
 
-        public TranslationModule(ITranslator translator, ITokenService tokenService, IMessageValidator validator, ILogger<TranslationModule> logger)
+        private readonly IEcsContainer container;
+        private readonly EventRegisterSystem register;
+        private CancellationTokenSource stopToken;
+
+        public TranslationModule(ITranslator translator, ILogger<TranslationModule> logger)
         {
-            this.translator = translator;
-            this.tokenService = tokenService;
-            this.validator = validator;
             this.logger = logger;
+
+            register = new();
+
+            EcsContainerBuilder builder = new();
+            container = builder
+            .AddSystem(register)
+            .AddSystem(new TranslateSystem(translator))
+            .AddSystem(new SendSystem())
+            .Build();
+
+            container.Init();
         }
 
         public void Register(DiscordClient client)
         {
             logger.LogDebug("Registering to {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded += OnMessageReactionAdded;
+
+            stopToken = new();
+            Task.Run(async () =>
+            {
+                while (!stopToken.Token.IsCancellationRequested)
+                {
+                    container.Run();
+                    await Task.Delay(100);
+                }
+            }, stopToken.Token);
         }
 
         public void Unregister(DiscordClient client)
         {
             logger.LogDebug("Unregistering from {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded -= OnMessageReactionAdded;
+            stopToken.Cancel();
         }
 
         private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
         {
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    DiscordMessage message = await e.Message.EnsureCached();
-
-                    if (await validator.Validate(e, message))
-                    {
-                        await e.Channel.TriggerTypingAsync();
-
-                        string translate = await translator.Translate(message.Content!, e.Emoji.GetDiscordName());
-
-                        logger.LogDebug("Translated message: {Message}", translate);
-
-                        if (string.IsNullOrEmpty(translate))
-                        {
-                            translate = "Unable to translate";
-                            logger.LogDebug("Unable to translate message {Id} to language {Emoji}", e.Message.Id, e.Emoji.GetDiscordName());
-                        }
-
-                        await new DiscordMessageBuilder()
-                        .WithContent($"{e.User.Mention}\n{translate}")
-                        .WithAllowedMention(new UserMention(e.User))
-                        .WithReply(e.Message.Id)
-                        .SendAsync(e.Channel);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ex.LogExceptionMessage(logger);
-                }
-            });
+            register.RegisterEvent(e);
             return Task.CompletedTask;
         }
     }

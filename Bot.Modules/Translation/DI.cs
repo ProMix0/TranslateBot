@@ -12,7 +12,7 @@ namespace Bot.Modules.Translation
     {
         public static IServiceCollection AddTranslation(this IServiceCollection services) =>
             services
-                .AddTransient<IMessageValidator, MessageValidator>()
+                //.AddTransient<IMessageValidator, MessageValidator>()
                 .AddTransient<ITranslator, MirrorsLibreTranslator>()
                 .AddTransient<IBotModule, TranslationModule>()
                 .AddOptions<MirrorsLibreTranslator.MirrorsList>(builder =>
