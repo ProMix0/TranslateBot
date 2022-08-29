@@ -18,7 +18,7 @@ namespace Bot.Modules.Translation
 
         private readonly IEcsContainer container;
         private readonly EventRegisterSystem register;
-        private CancellationTokenSource stopToken;
+        private CancellationTokenSource? stopToken;
 
         public TranslationModule(ITranslator translator, ILogger<TranslationModule> logger)
         {
@@ -29,6 +29,8 @@ namespace Bot.Modules.Translation
             EcsContainerBuilder builder = new();
             container = builder
             .AddSystem(register)
+            .AddSystem(new FillTranslateOptionsSystem())
+            .AddSystem(new ValidationSystem())
             .AddSystem(new TranslateSystem(translator))
             .AddSystem(new SendSystem())
             .Build();
@@ -56,7 +58,7 @@ namespace Bot.Modules.Translation
         {
             logger.LogDebug("Unregistering from {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded -= OnMessageReactionAdded;
-            stopToken.Cancel();
+            stopToken?.Cancel();
         }
 
         private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)

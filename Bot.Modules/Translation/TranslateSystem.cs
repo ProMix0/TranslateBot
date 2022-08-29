@@ -6,7 +6,7 @@ namespace Bot.Modules.Translation
     {
         private readonly ITranslator translator;
 
-        private IComponentPool<MessageToTranslate> messages = null!;
+        private IComponentPool<TranslationOptions> translationOptions = null!;
         private IComponentPool<TranslatedMessage> translates = null!;
         private IEcsFilter untranslated = null!;
 
@@ -17,25 +17,18 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            messages = world.PoolsList.GetComponentPool<MessageToTranslate>();
+            translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
             translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
-            untranslated = world.FiltersManager.Filter().With<MessageToTranslate>().Without<TranslatedMessage>().Build();
+            untranslated = world.FiltersManager.Filter().With<TranslationOptions>().Without<TranslatedMessage>().Build();
         }
 
         public void Run()
         {
-            try
+            foreach (var entity in untranslated)
             {
-                foreach (var entity in untranslated)
-                {
-                    MessageToTranslate message = messages.GetComponent(entity);
-                    ref TranslatedMessage translated = ref translates.AddComponent(entity);
-                    translated.translationTask = translator.Translate(message.message, message.target);
-                }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
+                TranslationOptions options = translationOptions.GetComponent(entity);
+                ref TranslatedMessage translated = ref translates.AddComponent(entity);
+                translated.translationTask = translator.Translate(options.message, options.language!);
             }
         }
     }

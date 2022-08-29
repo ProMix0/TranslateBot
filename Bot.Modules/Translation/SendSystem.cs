@@ -7,7 +7,7 @@ namespace Bot.Modules.Translation
     public class SendSystem : IEcsRunSystem, IEcsInitSystem
     {
 
-        private IComponentPool<MessageToTranslate> messages = null!;
+        private IComponentPool<ReactionEvent> messages = null!;
         private IComponentPool<TranslatedMessage> translates = null!;
         private IEcsFilter translated = null!;
         private IEntitiesManager entities = null!;
@@ -15,9 +15,9 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            messages = world.PoolsList.GetComponentPool<MessageToTranslate>();
+            messages = world.PoolsList.GetComponentPool<ReactionEvent>();
             translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
-            translated = world.FiltersManager.Filter().With<MessageToTranslate>().With<TranslatedMessage>().Build();
+            translated = world.FiltersManager.Filter().With<ReactionEvent>().With<TranslatedMessage>().Build();
             entities = world.EntitiesManager;
         }
 
@@ -25,7 +25,7 @@ namespace Bot.Modules.Translation
         {
             foreach (var entity in translated)
             {
-                MessageToTranslate message = messages.GetComponent(entity);
+                ReactionEvent message = messages.GetComponent(entity);
                 TranslatedMessage translate = translates.GetComponent(entity);
 
                 if (!translate.translationTask.IsCompleted) continue;

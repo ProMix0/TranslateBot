@@ -9,7 +9,7 @@ namespace Bot.Modules.Translation
 {
     public class EventRegisterSystem : IEcsInitSystem, IEcsRunSystem
     {
-        private IComponentPool<MessageToTranslate> messages = null!;
+        private IComponentPool<ReactionEvent> reactions = null!;
         private IEntitiesManager entities = null!;
         private readonly ConcurrentQueue<MessageReactionAddEventArgs> events = new();
 
@@ -20,7 +20,7 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            messages = world.PoolsList.GetComponentPool<MessageToTranslate>();
+            reactions = world.PoolsList.GetComponentPool<ReactionEvent>();
             entities = world.EntitiesManager;
         }
 
@@ -29,10 +29,8 @@ namespace Bot.Modules.Translation
             while (events.TryDequeue(out MessageReactionAddEventArgs? reaction))
             {
                 var entity = entities.CreateEntity();
-                ref MessageToTranslate message = ref messages.AddComponent(entity);
-                message.message = reaction.Message.EnsureCached().Result.Content;
-                message.target = MirrorsLibreTranslator.FromEmoji(reaction.Emoji.GetDiscordName())!;
-                message.e = reaction;
+                ref ReactionEvent reactionEvent = ref reactions.AddComponent(entity);
+                reactionEvent.e = reaction;
             }
         }
 
