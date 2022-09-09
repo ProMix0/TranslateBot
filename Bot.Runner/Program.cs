@@ -20,9 +20,6 @@ IHost host = Host.CreateDefaultBuilder()
     })
     .ConfigureServices((context, services) =>
     {
-        foreach (var config in context.Configuration.AsEnumerable())
-            Console.WriteLine($"{config.Key}:{config.Value}");
-
         services
 
         .AddSingleton<ITokenService, TokenService>()
