@@ -23,11 +23,8 @@ namespace Bot.Modules.Translation
         {
             Type typeToCreate = typeof(LanguageCode);
             ConstructorInfo[] ctors = typeToCreate.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance);
-            Console.WriteLine(ctors.Length);
             ConstructorInfo ctor = ctors[0];
-            Console.WriteLine(ctor.GetParameters().Length);
             turkey = (LanguageCode)ctor.Invoke(new object[] { "tr" });
-            Console.WriteLine(turkey);
         }
 
         public MirrorsLibreTranslator(IOptions<MirrorsList> mirrors, ILogger<MirrorsLibreTranslator> logger)
