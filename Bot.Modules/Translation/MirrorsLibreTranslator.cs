@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LibreTranslate.Net;
@@ -15,6 +16,19 @@ namespace Bot.Modules.Translation
         private readonly List<LibreTranslate.Net.LibreTranslate> translates = new();
         private readonly ILogger<MirrorsLibreTranslator> logger;
         int index = 0;
+
+        static private readonly LanguageCode turkey;
+
+        static MirrorsLibreTranslator()
+        {
+            Type typeToCreate = typeof(LanguageCode);
+            ConstructorInfo[] ctors = typeToCreate.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance);
+            Console.WriteLine(ctors.Length);
+            ConstructorInfo ctor = ctors[0];
+            Console.WriteLine(ctor.GetParameters().Length);
+            turkey = (LanguageCode)ctor.Invoke(new object[] { "tr" });
+            Console.WriteLine(turkey);
+        }
 
         public MirrorsLibreTranslator(IOptions<MirrorsList> mirrors, ILogger<MirrorsLibreTranslator> logger)
         {
@@ -31,6 +45,8 @@ namespace Bot.Modules.Translation
                 logger.LogError("Activity check didn't found active mirrors");
             else
                 logger.LogDebug("End activity check with {Count} active mirrors", translates.Count);
+
+            logger.LogDebug("Turley code: {Code}", turkey);
         }
 
         public Task<string> Translate(string text, string emoji)
@@ -75,6 +91,7 @@ namespace Bot.Modules.Translation
             ":flag_pt:" => LanguageCode.Portuguese,
             ":flag_ru:" => LanguageCode.Russian,
             ":flag_es:" => LanguageCode.Spanish,
+            ":flag_tr:" => turkey,
             _ => null
         };
 
