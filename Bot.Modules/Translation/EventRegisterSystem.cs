@@ -39,7 +39,7 @@ namespace Bot.Modules.Translation
         {
             while (events.TryDequeue(out MessageReactionAddEventArgs? reaction))
             {
-                logger.LogDebug("Message dequeued");
+                logger.LogTrace("Message dequeued");
 
                 var entity = entities.CreateEntity();
 

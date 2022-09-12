@@ -35,8 +35,6 @@ namespace Bot.Modules.Translation
         {
             foreach (var entity in filter)
             {
-                logger.LogDebug("Entity handles");
-
                 ReactionEvent reaction = reactions.GetComponent(entity);
 
                 ref TranslationOptions translation = ref translationOptions.AddComponent(entity);

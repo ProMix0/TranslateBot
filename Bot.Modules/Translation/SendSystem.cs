@@ -37,7 +37,7 @@ namespace Bot.Modules.Translation
 
                 if (!translate.translationTask.IsCompleted)
                 {
-                    logger.LogDebug("Translation not completed; skipping");
+                    logger.LogTrace("Translation not completed; skipping");
                     continue;
                 }
 
