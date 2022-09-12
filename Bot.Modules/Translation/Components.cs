@@ -1,3 +1,4 @@
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using LibreTranslate.Net;
 
@@ -7,6 +8,11 @@ namespace Bot.Modules.Translation
     public struct ReactionEvent
     {
         public MessageReactionAddEventArgs e;
+    }
+
+    public struct CachedMessage
+    {
+        public DiscordMessage message;
     }
 
     public struct TranslationOptions
@@ -19,4 +25,6 @@ namespace Bot.Modules.Translation
     {
         public Task<string> translationTask;
     }
+
+    public struct TypingTriggered { }
 }

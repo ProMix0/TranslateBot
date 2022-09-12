@@ -11,6 +11,7 @@ namespace Bot.Modules.Translation
     {
         private IComponentPool<TranslationOptions> translationOptions = null!;
         private IComponentPool<ReactionEvent> events = null!;
+        private IComponentPool<CachedMessage> cacheds = null!;
         private IEntitiesManager entities = null!;
 
         private IEcsFilter filter = null!;
@@ -19,6 +20,7 @@ namespace Bot.Modules.Translation
         {
             translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
             events = world.PoolsList.GetComponentPool<ReactionEvent>();
+            cacheds = world.PoolsList.GetComponentPool<CachedMessage>();
             entities = world.EntitiesManager;
             filter = world.FiltersManager.Filter().With<TranslationOptions>().Without<TranslatedMessage>().Build();
         }
@@ -29,6 +31,7 @@ namespace Bot.Modules.Translation
             {
                 ReactionEvent reactionEvent = events.GetComponent(entity);
                 TranslationOptions options = translationOptions.GetComponent(entity);
+                CachedMessage cached = cacheds.GetComponent(entity);
 
                 bool valid = true;
 
@@ -36,7 +39,7 @@ namespace Bot.Modules.Translation
                     valid = false;
 
 
-                if (reactionEvent.e.Message.Author.IsBot)
+                if (cached.message.Author.IsBot)
                     valid = false;
 
 

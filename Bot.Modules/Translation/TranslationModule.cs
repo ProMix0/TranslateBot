@@ -20,19 +20,20 @@ namespace Bot.Modules.Translation
         private readonly EventRegisterSystem register;
         private CancellationTokenSource? stopToken;
 
-        public TranslationModule(ITranslator translator, ILogger<TranslationModule> logger)
+        public TranslationModule(EventRegisterSystem register, IServiceProvider provider, ILogger<TranslationModule> logger)
         {
             this.logger = logger;
 
-            register = new();
+            this.register = register;
 
-            EcsContainerBuilder builder = new();
+            IInjectContainerBuilder builder = new EcsContainerBuilder().UseSystemInjection(provider);
             container = builder
             .AddSystem(register)
-            .AddSystem(new FillTranslateOptionsSystem())
-            .AddSystem(new ValidationSystem())
-            .AddSystem(new TranslateSystem(translator))
-            .AddSystem(new SendSystem())
+            .AddSystem<FillTranslateOptionsSystem>()
+            .AddSystem<ValidationSystem>()
+            .AddSystem<TriggerTypingSystem>()
+            .AddSystem<TranslateSystem>()
+            .AddSystem<SendSystem>()
             .Build();
 
             container.Init();
@@ -46,11 +47,20 @@ namespace Bot.Modules.Translation
             stopToken = new();
             Task.Run(async () =>
             {
-                while (!stopToken.Token.IsCancellationRequested)
+                try
                 {
-                    container.Run();
-                    await Task.Delay(100);
+                    logger.LogDebug("Start Run() loop");
+                    while (!stopToken.Token.IsCancellationRequested)
+                    {
+                        container.Run();
+                        await Task.Delay(100);
+                    }
                 }
+                catch (Exception e)
+                {
+                    e.LogExceptionMessage(logger);
+                }
+                logger.LogDebug("End Run() loop");
             }, stopToken.Token);
         }
 

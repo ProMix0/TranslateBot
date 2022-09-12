@@ -16,7 +16,14 @@ namespace Bot.Modules.Translation
                 .AddTransient<ITranslator, MirrorsLibreTranslator>()
                 .AddTransient<IBotModule, TranslationModule>()
                 .AddOptions<MirrorsLibreTranslator.MirrorsList>(builder =>
-            builder.BindConfiguration(MirrorsLibreTranslator.MirrorsList.SectionName));
+                    builder.BindConfiguration(MirrorsLibreTranslator.MirrorsList.SectionName))
+
+                .AddTransient<FillTranslateOptionsSystem>()
+                .AddTransient<ValidationSystem>()
+                .AddTransient<TranslateSystem>()
+                .AddTransient<SendSystem>()
+                .AddTransient<EventRegisterSystem>()
+                .AddTransient<TriggerTypingSystem>();
 
     }
 }
