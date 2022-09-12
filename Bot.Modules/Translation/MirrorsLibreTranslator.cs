@@ -42,8 +42,6 @@ namespace Bot.Modules.Translation
                 logger.LogError("Activity check didn't found active mirrors");
             else
                 logger.LogDebug("End activity check with {Count} active mirrors", translates.Count);
-
-            logger.LogDebug("Turley code: {Code}", turkey);
         }
 
         public Task<string> Translate(string text, LanguageCode to)
