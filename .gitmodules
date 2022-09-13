@@ -3,4 +3,4 @@
 	url = https://github.com/ProMix0/Utils.git
 [submodule "BicycleEcs"]
 	path = BicycleEcs
-	url = git@github.com:ProMix0/BicycleEcs.git
+	url = https://github.com/ProMix0/BicycleEcs.git
