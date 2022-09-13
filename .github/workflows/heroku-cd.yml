@@ -1,4 +1,4 @@
-name: Deploy Heroku
+name: Upload to Docker Hub
 
 on:
   push:
