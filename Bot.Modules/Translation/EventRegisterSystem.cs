@@ -25,7 +25,7 @@ namespace Bot.Modules.Translation
         public void RegisterEvent(MessageReactionAddEventArgs reaction)
         {
             events.Enqueue(reaction);
-            logger.LogDebug("Message enqueued");
+            logger.LogTrace("Message enqueued");
         }
 
         public void Init(IEcsWorld world)
@@ -47,7 +47,7 @@ namespace Bot.Modules.Translation
                 reactionEvent.e = reaction;
 
                 ref CachedMessage cached = ref cacheds.AddComponent(entity);
-                cached.message = reaction.Message.EnsureCached().Result;
+                cached.message = reaction.Message.EnsureCached();
             }
         }
 

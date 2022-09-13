@@ -39,7 +39,7 @@ namespace Bot.Modules.Translation
                     valid = false;
 
 
-                if (cached.message.Author.IsBot)
+                if (cached.message.Result.Author.IsBot)
                     valid = false;
 
 

@@ -36,9 +36,16 @@ namespace Bot.Modules.Translation
             foreach (var entity in filter)
             {
                 ReactionEvent reaction = reactions.GetComponent(entity);
+                CachedMessage cached = cacheds.GetComponent(entity);
+
+                if (!cached.message.IsCompleted)
+                {
+                    logger.LogTrace($"Skip adding {nameof(TranslationOptions)} due to incompleted cache task");
+                    continue;
+                }
 
                 ref TranslationOptions translation = ref translationOptions.AddComponent(entity);
-                translation.message = cacheds.GetComponent(entity).message.Content;
+                translation.message = cached.message.Result.Content;
                 translation.language = MirrorsLibreTranslator.FromEmoji(reaction.e.Emoji.GetDiscordName());
             }
         }

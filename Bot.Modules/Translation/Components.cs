@@ -12,7 +12,7 @@ namespace Bot.Modules.Translation
 
     public struct CachedMessage
     {
-        public DiscordMessage message;
+        public Task<DiscordMessage> message;
     }
 
     public struct TranslationOptions
