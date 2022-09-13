@@ -30,7 +30,7 @@ jobs:
             file: ./Dockerfile
             builder: ${{ steps.buildx.outputs.name }}
             push: true
-            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/translate-bot:latest
+            tags: ${{ secrets.DOCKER_USER }}/translate-bot:latest
             cache-from: type=registry,ref=${{ secrets.DOCKER_USER }}/translate-bot:buildcache
             cache-to: type=registry,ref=${{ secrets.DOCKER_USER }}/translate-bot:buildcache,mode=max
 #        - name: Login Heroku
