@@ -26,7 +26,7 @@ IHost host = Host.CreateDefaultBuilder()
 
         .AddTranslation()
 
-        .AddHostedService<BotService>();
+        .AddHostedService<ResolveInScope<BotService>>();
     })
     .Build();
 
