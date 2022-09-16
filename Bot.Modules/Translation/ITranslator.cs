@@ -9,6 +9,8 @@ namespace Bot.Modules.Translation
 {
     public interface ITranslator
     {
-        public Task<string> Translate(string text, LanguageCode target);
+        public Task<string> Translate(string text, string target);
+
+        public bool CanTranslateTo(string language);
     }
 }

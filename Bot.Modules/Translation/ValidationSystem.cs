@@ -13,8 +13,14 @@ namespace Bot.Modules.Translation
         private IComponentPool<ReactionEvent> events = null!;
         private IComponentPool<CachedMessage> cacheds = null!;
         private IEntitiesManager entities = null!;
-
         private IEcsFilter filter = null!;
+
+        private ITranslator translator;
+
+        public ValidationSystem(ITranslator translator)
+        {
+            this.translator = translator;
+        }
 
         public void Init(IEcsWorld world)
         {
@@ -42,6 +48,8 @@ namespace Bot.Modules.Translation
                 if (cached.message.Result.Author.IsBot)
                     valid = false;
 
+                if (!translator.CanTranslateTo(options.language!))
+                    valid = false;
 
                 if (string.IsNullOrWhiteSpace(options.message))
                     valid = false;

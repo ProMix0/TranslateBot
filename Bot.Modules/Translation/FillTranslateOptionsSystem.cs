@@ -46,7 +46,7 @@ namespace Bot.Modules.Translation
 
                 ref TranslationOptions translation = ref translationOptions.AddComponent(entity);
                 translation.message = cached.message.Result.Content;
-                translation.language = MirrorsLibreTranslator.FromEmoji(reaction.e.Emoji.GetDiscordName());
+                translation.language = reaction.e.Emoji.GetDiscordName().ToLanguageCode();
             }
         }
     }

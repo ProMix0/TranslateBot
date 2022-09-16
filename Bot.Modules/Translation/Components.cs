@@ -17,7 +17,7 @@ namespace Bot.Modules.Translation
 
     public struct TranslationOptions
     {
-        public LanguageCode? language;
+        public string language;
         public string message;
     }
 
