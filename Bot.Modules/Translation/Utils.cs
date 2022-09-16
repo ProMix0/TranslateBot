@@ -9,6 +9,7 @@ namespace Bot.Modules.Translation
             "us" => "en",
             "um" => "en",
             "gb" => "en",
+            "cn" => "zh",
             string str => str
         };
     }
