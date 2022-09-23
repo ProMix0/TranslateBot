@@ -6,7 +6,12 @@ using Bot.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sentry;
+using Sentry.Extensions;
+using Sentry.Extensions.Logging;
+using Sentry.Integrations;
 using Utils;
 
 Console.WriteLine("Hello, World!");
@@ -17,6 +22,13 @@ IHost host = Host.CreateDefaultBuilder()
         builder
         .AddUserSecrets(Assembly.GetAssembly(typeof(Program)))
         .AddEnvironmentVariables();
+    })
+    .ConfigureLogging((context, builder) =>
+    {
+        builder
+
+        .AddConfiguration(context.Configuration)
+        .AddSentry();
     })
     .ConfigureServices((context, services) =>
     {
