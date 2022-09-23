@@ -5,7 +5,22 @@ namespace Bot.Abstractions
 {
     public interface ITokenService
     {
-        string? Token { get; }
+        TokenResult Find(params string[] keys);
+    }
+
+    public struct TokenResult
+    {
+        internal TokenResult(string token, bool success)
+        {
+            Token = token;
+            IsSuccessful = success;
+        }
+
+        public readonly string Token;
+        public readonly bool IsSuccessful;
+
+        internal static TokenResult Success(string token) => new(token, true);
+        internal static TokenResult Fail() => new(null!, false);
     }
 
     public class TokenService : ITokenService
@@ -13,29 +28,35 @@ namespace Bot.Abstractions
         private readonly IConfiguration configuration;
         private readonly ILogger<TokenService> logger;
 
-        private readonly string[] keys = { "Token", "DISCORD_TOKEN" };
-
-        public string? Token { get; private set; }
-
         public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
         {
             this.configuration = configuration;
             this.logger = logger;
-
-            foreach (var key in keys)
-                if (TrySetToken(key))
-                    break;
-
-            if (Token == null)
-                logger.LogCritical("Can't get token from keys");
         }
 
-        private bool TrySetToken(string key)
+        public TokenResult Find(params string[] keys)
         {
-            Token = configuration[key];
-            if (Token != null)
+            string? token = null;
+
+            foreach (var key in keys)
+                if (TrySetToken(key, ref token!))
+                    break;
+
+            if (token == null)
+            {
+                logger.LogCritical("Can't get token from keys");
+                return TokenResult.Fail();
+            }
+            return TokenResult.Success(token);
+        }
+
+        private bool TrySetToken(string key, ref string token)
+        {
+            string tempToken = configuration[key];
+            if (tempToken != null)
             {
                 logger.LogDebug("Get token from {Key}", key);
+                token = tempToken;
                 return true;
             }
             return false;

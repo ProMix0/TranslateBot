@@ -32,7 +32,7 @@ namespace Bot.Runner
             DiscordClient client = new(new()
             {
                 LoggerFactory = loggerFactory,
-                Token = tokenService.Token,
+                Token = tokenService.Find("DISCORD_TOKEN").Token,
                 TokenType = TokenType.Bot
             });
 

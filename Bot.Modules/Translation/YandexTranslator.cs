@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bot.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,9 +18,9 @@ namespace Bot.Modules.Translation
         private string[] supportedLanguages;
         private ILogger<YandexTranslator> logger;
 
-        public YandexTranslator(IConfiguration configuration, ILogger<YandexTranslator> logger)
+        public YandexTranslator(ITokenService tokenService, ILogger<YandexTranslator> logger)
         {
-            serviceKey = configuration["SERVICE_TOKEN"];
+            serviceKey = tokenService.Find("SERVICE_TOKEN").Token;
 
             client = new();
             client.DefaultRequestHeaders.Add("Authorization", $"Api-Key {serviceKey}");
