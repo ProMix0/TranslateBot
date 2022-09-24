@@ -10,6 +10,8 @@ namespace Bot.Modules.Translation
             "um" => "en",
             "gb" => "en",
             "cn" => "zh",
+            "kr" => "ko",
+            "jp" => "ja",
             string str => str
         };
     }
