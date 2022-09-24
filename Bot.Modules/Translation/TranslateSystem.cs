@@ -17,8 +17,10 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
-            translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
+            BicycleEcs.Utils.InjectPools(world.PoolsList, this);
+
+            //translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
+            //translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
             untranslated = world.FiltersManager.Filter().With<TranslationOptions>().Without<TranslatedMessage>().Build();
         }
 

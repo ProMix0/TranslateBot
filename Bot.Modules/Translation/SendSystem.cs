@@ -22,8 +22,10 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            messages = world.PoolsList.GetComponentPool<ReactionEvent>();
-            translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
+            BicycleEcs.Utils.InjectPools(world.PoolsList, this);
+
+            //messages = world.PoolsList.GetComponentPool<ReactionEvent>();
+            //translates = world.PoolsList.GetComponentPool<TranslatedMessage>();
             translated = world.FiltersManager.Filter().With<ReactionEvent>().With<TranslatedMessage>().Build();
             entities = world.EntitiesManager;
         }

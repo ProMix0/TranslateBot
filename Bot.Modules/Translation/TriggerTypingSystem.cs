@@ -21,8 +21,10 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            messages = world.PoolsList.GetComponentPool<ReactionEvent>();
-            typings = world.PoolsList.GetComponentPool<TypingTriggered>();
+            BicycleEcs.Utils.InjectPools(world.PoolsList, this);
+
+            // messages = world.PoolsList.GetComponentPool<ReactionEvent>();
+            //typings = world.PoolsList.GetComponentPool<TypingTriggered>();
             notTriggered = world.FiltersManager.Filter().With<ReactionEvent>().With<TranslatedMessage>().Without<TypingTriggered>().Build();
         }
 

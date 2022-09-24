@@ -30,9 +30,11 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            reactions = world.PoolsList.GetComponentPool<ReactionEvent>();
+            BicycleEcs.Utils.InjectPools(world.PoolsList, this);
+
+            //reactions = world.PoolsList.GetComponentPool<ReactionEvent>();
             entities = world.EntitiesManager;
-            cacheds = world.PoolsList.GetComponentPool<CachedMessage>();
+            //cacheds = world.PoolsList.GetComponentPool<CachedMessage>();
         }
 
         public void Run()

@@ -25,9 +25,11 @@ namespace Bot.Modules.Translation
 
         public void Init(IEcsWorld world)
         {
-            reactions = world.PoolsList.GetComponentPool<ReactionEvent>();
-            translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
-            cacheds = world.PoolsList.GetComponentPool<CachedMessage>();
+            BicycleEcs.Utils.InjectPools(world.PoolsList, this);
+
+            //reactions = world.PoolsList.GetComponentPool<ReactionEvent>();
+            //translationOptions = world.PoolsList.GetComponentPool<TranslationOptions>();
+            //cacheds = world.PoolsList.GetComponentPool<CachedMessage>();
             filter = world.FiltersManager.Filter().With<ReactionEvent>().With<CachedMessage>().Without<TranslationOptions>().Build();
         }
 
