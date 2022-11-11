@@ -19,7 +19,8 @@ namespace Bot.Runner
         private readonly ILogger<BotService> logger;
         private readonly ILoggerFactory loggerFactory;
 
-        public BotService(IEnumerable<IBotModule> modules, ITokenService tokenService, ILoggerFactory loggerFactory, ILogger<BotService> logger)
+        public BotService(IEnumerable<IBotModule> modules, ITokenService tokenService, ILoggerFactory loggerFactory,
+            ILogger<BotService> logger)
         {
             this.modules = modules;
             this.tokenService = tokenService;
@@ -27,7 +28,7 @@ namespace Bot.Runner
             this.logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken token)
         {
             DiscordClient client = new(new()
             {
@@ -38,15 +39,16 @@ namespace Bot.Runner
 
             foreach (var module in modules)
                 module.Register(client);
-	    while (true)
-		try
-		{
+            
+            while (!token.IsCancellationRequested)
+                try
+                {
                     await client.ConnectAsync();
-		}
-	        catch (Exception e)
-		{
-		    e.LogExceptionMessage(logger);
-		}
+                }
+                catch (Exception e)
+                {
+                    e.LogExceptionMessage(logger);
+                }
         }
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
