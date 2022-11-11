@@ -7,6 +7,7 @@ using DSharpPlus.EventArgs;
 using Emzi0767.Utilities;
 using LibreTranslate.Net;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Utils;
 
@@ -26,7 +27,9 @@ namespace Bot.Modules.Translation
 
             this.register = register;
 
-            IInjectContainerBuilder builder = new EcsContainerBuilder().UseSystemInjection(provider);
+            using IServiceScope scope = provider.CreateScope();
+
+            IInjectContainerBuilder builder = new EcsContainerBuilder().UseSystemInjection(scope.ServiceProvider);
             container = builder
             .AddSystem(register)
             .AddSystem<FillTranslateOptionsSystem>()
