@@ -38,8 +38,15 @@ namespace Bot.Runner
 
             foreach (var module in modules)
                 module.Register(client);
-
-            await client.ConnectAsync();
+	    while (true)
+		try
+		{
+                    await client.ConnectAsync();
+		}
+	        catch (Exception e)
+		{
+		    e.LogExceptionMessage(logger);
+		}
         }
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
