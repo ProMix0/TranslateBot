@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bot.Abstractions\Bot.Abstractions.csproj" />
     <ProjectReference Include="..\Bot.Modules\Bot.Modules.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
 </Project>

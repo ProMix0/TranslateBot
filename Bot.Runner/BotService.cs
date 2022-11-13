@@ -15,25 +15,25 @@ namespace Bot.Runner
     internal class BotService : NotEndingBackgroundService
     {
         private readonly IEnumerable<IBotModule> modules;
-        private readonly ITokenService tokenService;
+        private readonly IConfiguration configuration;
         private readonly ILogger<BotService> logger;
         private readonly ILoggerFactory loggerFactory;
 
-        public BotService(IEnumerable<IBotModule> modules, ITokenService tokenService, ILoggerFactory loggerFactory,
+        public BotService(IEnumerable<IBotModule> modules, IConfiguration configuration, ILoggerFactory loggerFactory,
             ILogger<BotService> logger)
         {
             this.modules = modules;
-            this.tokenService = tokenService;
+            this.configuration = configuration;
             this.loggerFactory = loggerFactory;
             this.logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken token)
         {
-            DiscordClient client = new(new()
+            DiscordClient client = new(new DiscordConfiguration
             {
                 LoggerFactory = loggerFactory,
-                Token = tokenService.Find("DISCORD_TOKEN").Token,
+                Token = configuration.Find(logger,"DISCORD_TOKEN").GetTokenOrThrow(),
                 TokenType = TokenType.Bot
             });
 

@@ -34,8 +34,6 @@ IHost host = Host.CreateDefaultBuilder()
     {
         services
 
-        .AddSingleton<ITokenService, TokenService>()
-
         .AddTranslation()
 
         .AddHostedService<ResolveInScope<BotService>>();

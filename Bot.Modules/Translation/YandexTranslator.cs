@@ -14,13 +14,13 @@ namespace Bot.Modules.Translation
     public class YandexTranslator : ITranslator
     {
         private string serviceKey;
-        private HttpClient client;
-        private string[] supportedLanguages;
-        private ILogger<YandexTranslator> logger;
+        private readonly HttpClient client;
+        private readonly string[] supportedLanguages;
+        private readonly ILogger<YandexTranslator> logger;
 
-        public YandexTranslator(ITokenService tokenService, ILogger<YandexTranslator> logger)
+        public YandexTranslator(IConfiguration configuration, ILogger<YandexTranslator> logger)
         {
-            serviceKey = tokenService.Find("SERVICE_TOKEN").Token;
+            serviceKey = configuration.Find(logger,"SERVICE_TOKEN").GetTokenOrThrow();
 
             client = new();
             client.DefaultRequestHeaders.Add("Authorization", $"Api-Key {serviceKey}");
