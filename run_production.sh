@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd Bot.Runner/
+cd Runner/
 dotnet run --environment Production
 

@@ -1,6 +1,6 @@
-[submodule "Utils"]
-	path = Utils
-	url = https://github.com/ProMix0/Utils.git
-[submodule "BicycleEcs"]
-	path = BicycleEcs
-	url = https://github.com/ProMix0/BicycleEcs.git
+[submodule "Dependencies/Utils"]
+	path = Dependencies/Utils
+	url = git@github.com:ProMix0/Utils.git
+[submodule "Dependencies/BicycleEcs"]
+	path = Dependencies/BicycleEcs
+	url = git@github.com:ProMix0/BicycleEcs.git
