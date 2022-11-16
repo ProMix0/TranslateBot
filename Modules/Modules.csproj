@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\Dependencies\Utils\Utils.csproj" />
-    <ProjectReference Include="..\Dependencies\BicycleEcs\BicycleEcs.csproj" />
   </ItemGroup>
 
 </Project>

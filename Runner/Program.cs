@@ -1,13 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Reflection;
 using Bot.Abstractions;
-using Bot.Modules.Translation;
 using Bot.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Modules.Translation;
 using Sentry;
 using Sentry.Extensions;
 using Sentry.Extensions.Logging;

@@ -1,14 +1,10 @@
-using System.Linq;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Utils;
 
-namespace Bot.Modules.Translation
+namespace Modules.Translation
 {
 
     public class YandexTranslator : ITranslator
@@ -55,13 +51,9 @@ namespace Bot.Modules.Translation
         {
             using StringContent jsonContent = new StringContent("{}", Encoding.UTF8, "application/json");
 
-            //logger.LogDebug("Request: {Request}", jsonContent.ReadAsStringAsync().Result);
-
             var response = client.PostAsync("https://translate.api.cloud.yandex.net/translate/v2/languages", jsonContent).Result;
 
             var jsonResponse = response.Content.ReadAsStringAsync().Result;
-
-            //logger.LogDebug("Response: {Response}", jsonResponse);
 
             var document = JsonDocument.Parse(jsonResponse);
 

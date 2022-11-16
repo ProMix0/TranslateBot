@@ -1,83 +1,68 @@
-using BetterHostedServices;
-using BicycleEcs;
 using Bot.Abstractions;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Emzi0767.Utilities;
-using LibreTranslate.Net;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Utils;
 
-namespace Bot.Modules.Translation
+namespace Modules.Translation
 {
     public class TranslationModule : IBotModule
     {
+        private readonly ITranslator translator;
         private readonly ILogger<TranslationModule> logger;
 
-        private readonly IEcsContainer container;
-        private readonly EventRegisterSystem register;
-        private CancellationTokenSource? stopToken;
-
-        public TranslationModule(EventRegisterSystem register, IServiceProvider provider, ILogger<TranslationModule> logger)
+        public TranslationModule(ITranslator translator, ILogger<TranslationModule> logger)
         {
+            this.translator = translator;
             this.logger = logger;
-
-            this.register = register;
-
-            using IServiceScope scope = provider.CreateScope();
-
-            IInjectContainerBuilder builder = new EcsContainerBuilder().UseSystemInjection(scope.ServiceProvider);
-            container = builder
-            .AddSystem(register)
-            .AddSystem<FillTranslateOptionsSystem>()
-            .AddSystem<ValidationSystem>()
-            .AddSystem<TriggerTypingSystem>()
-            .AddSystem<TranslateSystem>()
-            .AddSystem<SendSystem>()
-            .Build();
-
-            container.Init();
         }
 
         public void Register(DiscordClient client)
         {
             logger.LogDebug("Registering to {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded += OnMessageReactionAdded;
-
-            stopToken = new();
-            Task.Run(async () =>
-            {
-                try
-                {
-                    logger.LogDebug("Start Run() loop");
-                    while (!stopToken.Token.IsCancellationRequested)
-                    {
-                        container.Run();
-                        await Task.Delay(100);
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.LogExceptionMessage(logger);
-                }
-                logger.LogDebug("End Run() loop");
-            }, stopToken.Token);
         }
 
         public void Unregister(DiscordClient client)
         {
             logger.LogDebug("Unregistering from {Event}", nameof(client.MessageReactionAdded));
             client.MessageReactionAdded -= OnMessageReactionAdded;
-            stopToken?.Cancel();
         }
 
-        private Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
+        private async Task OnMessageReactionAdded(DiscordClient s, MessageReactionAddEventArgs e)
         {
-            register.RegisterEvent(e);
-            return Task.CompletedTask;
+            DiscordMessage message = await e.Message.EnsureCached();
+            
+            if (message.Author.IsBot)
+                return;
+
+            if (string.IsNullOrWhiteSpace(message.Content))
+                return;
+            
+            logger.LogTrace("Message and author are valid");
+
+            string language = e.Emoji.GetDiscordName().ToLanguageCode();
+            logger.LogTrace("Language code: {Code}", language);
+            if (!translator.CanTranslateTo(language))
+                return;
+
+            _ = TranslateAsync().ContinueWith(task => { task.Exception?.LogExceptionMessage(logger); },
+                TaskContinuationOptions.NotOnRanToCompletion);
+
+            async Task TranslateAsync()
+            {
+                await e.Channel.TriggerTypingAsync();
+
+                string translation = await translator.Translate(message.Content, language);
+
+                await new DiscordMessageBuilder()
+                    .WithContent($"{e.User.Mention}\n{translation}")
+                    .WithAllowedMention(new UserMention(e.User))
+                    .WithReply(e.Message.Id)
+                    .SendAsync(e.Channel);
+            }
         }
     }
 }

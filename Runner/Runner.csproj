@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>217b8fac-5ae8-4d69-a458-a9414de1b46b</UserSecretsId>
@@ -39,7 +39,6 @@
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\Modules\Modules.csproj" />
     <ProjectReference Include="..\Dependencies\Utils\Utils.csproj" />
-    <ProjectReference Include="..\Dependencies\BicycleEcs\BicycleEcs.csproj" />
   </ItemGroup>
 
 </Project>

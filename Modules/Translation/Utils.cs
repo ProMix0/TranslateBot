@@ -1,6 +1,6 @@
 
 
-namespace Bot.Modules.Translation
+namespace Modules.Translation
 {
     public static class Utils
     {
@@ -12,7 +12,8 @@ namespace Bot.Modules.Translation
             "cn" => "zh",
             "kr" => "ko",
             "jp" => "ja",
-            string str => str
+            "ua"=>"uk",
+            { } str => str
         };
     }
 }
