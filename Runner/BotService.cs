@@ -33,22 +33,14 @@ namespace Bot.Runner
             DiscordClient client = new(new DiscordConfiguration
             {
                 LoggerFactory = loggerFactory,
-                Token = configuration.Find(logger,"DISCORD_TOKEN").GetTokenOrThrow(),
+                Token = configuration.Find(logger, "DISCORD_TOKEN").GetTokenOrThrow(),
                 TokenType = TokenType.Bot
             });
 
             foreach (var module in modules)
                 module.Register(client);
-            
-            while (!token.IsCancellationRequested)
-                try
-                {
-                    await client.ConnectAsync();
-                }
-                catch (Exception e)
-                {
-                    e.LogExceptionMessage(logger);
-                }
+
+            await client.ConnectAsync();
         }
 
         protected override void OnError(Exception exceptionFromExecuteAsync)
